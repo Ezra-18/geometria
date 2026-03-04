@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geometria PAU · Bloc 1: Vectors</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #252a38;
+    --accent: #4af0b0;
+    --accent2: #f0a84a;
+    --accent3: #a84af0;
+    --text: #e8eaf0;
+    --text-dim: #7880a0;
+    --formula-bg: #0a1520;
+    --formula-border: #1e3a55;
+    --tag-ok: rgba(74,240,176,0.12);
+    --tag-warn: rgba(240,168,74,0.12);
+    --tag-info: rgba(168,74,240,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* --- LAYOUT --- */
+  .shell {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+  }
+
+  /* --- SIDEBAR --- */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 32px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .logo {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .logo-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .logo h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .logo h1 span { color: var(--accent); }
+
+  .nav-section {
+    padding: 0 16px;
+    margin-bottom: 8px;
+  }
+
+  .nav-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    padding: 0 8px;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .nav-btn {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-dim);
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+
+  .nav-btn:hover { background: var(--surface2); color: var(--text); }
+  .nav-btn.active { background: rgba(74,240,176,0.1); color: var(--accent); }
+
+  .nav-btn .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: var(--border);
+    width: 20px; height: 20px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: var(--text-dim);
+  }
+
+  .nav-btn.active .num { background: rgba(74,240,176,0.2); color: var(--accent); }
+
+  .pau-badge {
+    margin-left: auto;
+    background: rgba(240,168,74,0.2);
+    color: var(--accent2);
+    font-size: 9px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 2px 5px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+  }
+
+  /* --- MAIN --- */
+  .main {
+    padding: 48px 56px;
+    max-width: 900px;
+  }
+
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- SECTION HEADER --- */
+  .section-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .section-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 34px;
+    color: var(--text);
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+
+  .section-header p {
+    color: var(--text-dim);
+    font-size: 17px;
+    font-style: italic;
+  }
+
+  /* --- CARDS --- */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .card-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .icon-green { background: rgba(74,240,176,0.12); }
+  .icon-orange { background: rgba(240,168,74,0.12); }
+  .icon-purple { background: rgba(168,74,240,0.12); }
+  .icon-blue { background: rgba(74,148,240,0.12); }
+
+  .card h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text);
+  }
+
+  .card p { color: var(--text-dim); margin-bottom: 12px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card strong { color: var(--text); font-weight: 600; }
+
+  /* --- FORMULA BOX --- */
+  .formula-box {
+    background: var(--formula-bg);
+    border: 1px solid var(--formula-border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 14px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: #a8d8ff;
+    line-height: 2;
+  }
+
+  .formula-box.orange { border-left-color: var(--accent2); }
+  .formula-box.purple { border-left-color: var(--accent3); }
+
+  .formula-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .f-hi { color: var(--accent); font-weight: 600; }
+  .f-hi2 { color: var(--accent2); font-weight: 600; }
+  .f-hi3 { color: var(--accent3); font-weight: 600; }
+
+  /* --- ALGORITHM --- */
+  .algo {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .algo-header {
+    background: rgba(74,240,176,0.08);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .algo-step {
+    display: flex;
+    gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .algo-step:last-child { border-bottom: none; }
+
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(74,240,176,0.15);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content { flex: 1; }
+  .step-content strong {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .step-content span { font-size: 15px; color: var(--text-dim); }
+
+  /* --- WHY BOX --- */
+  .why-box {
+    background: rgba(168,74,240,0.06);
+    border: 1px solid rgba(168,74,240,0.2);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 14px;
+    font-size: 15px;
+    font-style: italic;
+    color: #c8a8f0;
+  }
+
+  .why-box::before {
+    content: "⚡ Per què?  ";
+    font-style: normal;
+    font-weight: 600;
+    color: var(--accent3);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* --- PAU EXAMPLE --- */
+  .pau-box {
+    background: rgba(240,168,74,0.05);
+    border: 1px solid rgba(240,168,74,0.25);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-top: 20px;
+  }
+
+  .pau-box-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .pau-tag {
+    background: rgba(240,168,74,0.2);
+    color: var(--accent2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .pau-box h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--accent2);
+  }
+
+  .pau-box .enunciat {
+    background: var(--formula-bg);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    line-height: 1.8;
+  }
+
+  /* --- TOGGLE SOLUTION --- */
+  .toggle-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .toggle-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .toggle-btn.open { border-color: var(--accent2); color: var(--accent2); background: rgba(240,168,74,0.08); }
+
+  .solution { display: none; margin-top: 18px; }
+  .solution.open { display: block; }
+
+  .sol-step {
+    display: flex; gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+    font-size: 16px;
+  }
+  .sol-step:last-child { border-bottom: none; }
+  .sol-step .s-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    background: rgba(240,168,74,0.12);
+    padding: 3px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  /* --- COMPARISON TABLE --- */
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+
+  th {
+    background: var(--surface2);
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text-dim);
+  }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  td strong { color: var(--text); }
+  td code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--formula-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #a8d8ff;
+  }
+
+  /* --- PILL BADGES --- */
+  .pill {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    margin: 2px 3px;
+  }
+  .pill-green { background: var(--tag-ok); color: var(--accent); }
+  .pill-orange { background: var(--tag-warn); color: var(--accent2); }
+  .pill-purple { background: var(--tag-info); color: var(--accent3); }
+
+  /* --- DIVIDER --- */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+
+  /* --- PROGRESS BAR --- */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 4px 0 24px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* --- SCROLLBAR --- */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* responsive */
+  @media (max-width: 800px) {
+    .shell { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; }
+    .main { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <span class="logo-tag">2n Batxillerat · PAU</span>
+    <h1>Geometria<br><span>Analítica</span></h1>
+  </div>
+
+  <div class="nav-section">
+    <span class="nav-label">Bloc 1 — Vectors</span>
+    <button class="nav-btn active" onclick="show('s0',this)">
+      <span class="num">0</span> Índex Bloc 1
+    </button>
+    <button class="nav-btn" onclick="show('s1',this)">
+      <span class="num">1</span> Vectors: bases
+    </button>
+    <button class="nav-btn" onclick="show('s2',this)">
+      <span class="num">2</span> Mòdul · Unitari
+    </button>
+    <button class="nav-btn" onclick="show('s3',this)">
+      <span class="num">3</span> Producte Escalar <span class="pau-badge">★ PAU</span>
+    </button>
+    <button class="nav-btn" onclick="show('s4',this)">
+      <span class="num">4</span> Projecció
+    </button>
+    <button class="nav-btn" onclick="show('s5',this)">
+      <span class="num">5</span> Producte Vectorial <span class="pau-badge">★ PAU</span>
+    </button>
+    <button class="nav-btn" onclick="show('s6',this)">
+      <span class="num">6</span> Producte Mixt <span class="pau-badge">★ PAU</span>
+    </button>
+  </div>
+
+  <div class="nav-section" style="margin-top:16px">
+    <span class="nav-label">Blocs pròxims</span>
+    <button class="nav-btn" style="opacity:0.4;cursor:not-allowed">
+      <span class="num">—</span> Bloc 2: Rectes i Plans
+    </button>
+    <button class="nav-btn" style="opacity:0.4;cursor:not-allowed">
+      <span class="num">—</span> Bloc 3: Mètrics
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- S0: ÍNDEX -->
+<div id="s0" class="section active">
+  <div class="section-header">
+    <span class="section-tag">Bloc 1 · Visió general</span>
+    <h2>El teu Kit de<br>Vectors PAU</h2>
+    <p>6 conceptes. Comprèn-los bé i tindràs la base per a tot.</p>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" style="width:10%"></div></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Concepte</th>
+          <th>Necessito saber</th>
+          <th>Prioritat PAU</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td><strong>Vectors bàsics</strong></td>
+          <td>Coordenades de l'extrem i l'origen</td>
+          <td><span class="pill pill-green">Base</span></td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td><strong>Mòdul · Unitari</strong></td>
+          <td>Coordenades del vector</td>
+          <td><span class="pill pill-green">Base</span></td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td><strong>Producte Escalar</strong></td>
+          <td>Dos vectors (o les seves components)</td>
+          <td><span class="pill pill-orange">★ Alta</span></td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td><strong>Projecció</strong></td>
+          <td>Dos vectors</td>
+          <td><span class="pill pill-green">Mitjana</span></td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td><strong>Producte Vectorial</strong></td>
+          <td>Dos vectors → àrea, normal al pla</td>
+          <td><span class="pill pill-orange">★ Alta</span></td>
+        </tr>
+        <tr>
+          <td><strong>6</strong></td>
+          <td><strong>Producte Mixt</strong></td>
+          <td>Tres vectors → volum, coplanaritat</td>
+          <td><span class="pill pill-orange">★ Alta</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-top:24px">
+    <div class="card-header">
+      <div class="card-icon icon-green">💡</div>
+      <h3>Com usar aquest panell</h3>
+    </div>
+    <p>Cada tema té: <strong>Definició → Fórmules → Algoritme pas a pas → El "Per Què?" → Exemple PAU resolt.</strong></p>
+    <p>Selecciona qualsevol tema del menú lateral per començar. Pots amagar/mostrar les solucions per practicar.</p>
+  </div>
+</div>
+
+<!-- S1: VECTORS BÀSICS -->
+<div id="s1" class="section">
+  <div class="section-header">
+    <span class="section-tag">Tema 1 · Vectors</span>
+    <h2>Vectors en l'Espai:<br>Conceptes Base</h2>
+    <p>El fonament de tota la geometria analítica.</p>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green">📐</div>
+      <h3>Definició</h3>
+    </div>
+    <p>Un vector és un <strong>segment orientat</strong> amb mòdul (longitud), direcció i sentit. Es defineix donant un <strong>origen A</strong> i un <strong>extrem B</strong>.</p>
+    <div class="formula-box">
+      <span class="formula-label">Vector AB</span>
+      <span class="f-hi">AB⃗</span> = B − A = (<span class="f-hi">x₂−x₁</span>, <span class="f-hi">y₂−y₁</span>, <span class="f-hi">z₂−z₁</span>)
+    </div>
+    <p><strong>Regla d'or:</strong> sempre <em>extrem menys origen</em>. Mai al revés.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-orange">🔧</div>
+      <h3>Operacions bàsiques</h3>
+    </div>
+    <div class="formula-box orange">
+      <span class="formula-label">Suma i resta</span>
+      u⃗ + v⃗ = (<span class="f-hi2">x₁+x₂</span>, y₁+y₂, z₁+z₂)<br>
+      u⃗ − v⃗ = (<span class="f-hi2">x₁−x₂</span>, y₁−y₂, z₁−z₂)
+    </div>
+    <div class="formula-box orange">
+      <span class="formula-label">Producte per escalar k</span>
+      k · u⃗ = (<span class="f-hi2">k·x₁</span>, k·y₁, k·z₁)   → mateixa direcció, sentit igual (k>0) o oposat (k&lt;0)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-purple">🎯</div>
+      <h3>Vectors proporcionals (paral·lels)</h3>
+    </div>
+    <p>Dos vectors <strong>u⃗ i v⃗ són proporcionals</strong> si existeix un k tal que u⃗ = k·v⃗. Això significa que les seves components guarden la mateixa relació:</p>
+    <div class="formula-box purple">
+      u⃗ ∥ v⃗  ↔  <span class="f-hi3">x₁/x₂ = y₁/y₂ = z₁/z₂</span>  (= k)
+    </div>
+    <div class="why-box">Dos vectors paral·lels apunten en la mateixa direcció. Aquesta propietat és CLAU per determinar posicions relatives de rectes i plans.</div>
+  </div>
+</div>
+
+<!-- S2: MÒDUL I UNITARI -->
+<div id="s2" class="section">
+  <div class="section-header">
+    <span class="section-tag">Tema 2 · Mòdul</span>
+    <h2>Mòdul i<br>Vector Unitari</h2>
+    <p>Mesurar la "longitud" d'un vector.</p>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green">📏</div>
+      <h3>Fórmules clau</h3>
+    </div>
+    <div class="formula-box">
+      <span class="formula-label">Mòdul</span>
+      |u⃗| = √(<span class="f-hi">x²+y²+z²</span>)
+    </div>
+    <div class="formula-box">
+      <span class="formula-label">Vector unitari (mateixa direcció, mòdul = 1)</span>
+      û = u⃗ / |u⃗| = (<span class="f-hi">x/|u⃗|</span>, y/|u⃗|, z/|u⃗|)
+    </div>
+  </div>
+
+  <div class="algo">
+    <div class="algo-header">⚙ Algoritme: calcular el vector unitari</div>
+    <div class="algo-step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <strong>Identificar el vector</strong>
+        <span>Escriu les components: u⃗ = (x, y, z)</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <strong>Calcular el mòdul</strong>
+        <span>|u⃗| = √(x²+y²+z²). Simplifica l'arrel si pots.</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">3</span>
+      <div class="step-content">
+        <strong>Dividir cada component</strong>
+        <span>û = (x/|u⃗|, y/|u⃗|, z/|u⃗|)</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">4</span>
+      <div class="step-content">
+        <strong>Verificació</strong>
+        <span>Comprova que |û| = 1. Si no dona 1, hi ha un error.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S3: PRODUCTE ESCALAR -->
+<div id="s3" class="section">
+  <div class="section-header">
+    <span class="section-tag">Tema 3 · ★ Alta prioritat PAU</span>
+    <h2>Producte Escalar<br>i Angle entre Vectors</h2>
+    <p>La porta d'entrada a angles, perpendicularitat i molt més.</p>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green">✖️</div>
+      <h3>Definició i càlcul</h3>
+    </div>
+    <p>El producte escalar de dos vectors dona un <strong>nombre real</strong> (no un vector).</p>
+    <div class="formula-box">
+      <span class="formula-label">Fórmula geomètrica</span>
+      u⃗ · v⃗ = <span class="f-hi">|u⃗| · |v⃗| · cos(α)</span>
+    </div>
+    <div class="formula-box">
+      <span class="formula-label">Fórmula analítica (base ortonormal) ← la que uses a PAU</span>
+      u⃗ · v⃗ = <span class="f-hi">x₁x₂ + y₁y₂ + z₁z₂</span>
+    </div>
+    <div class="formula-box">
+      <span class="formula-label">Angle entre dos vectors</span>
+      cos(α) = <span class="f-hi">(u⃗ · v⃗) / (|u⃗| · |v⃗|)</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-orange">⚡</div>
+      <h3>Casos especials importants</h3>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Condició</th><th>Resultat</th><th>Interpretació</th></tr></thead>
+        <tbody>
+          <tr><td><code>u⃗ · v⃗ = 0</code></td><td><strong>α = 90°</strong></td><td>Vectors perpendiculars</td></tr>
+          <tr><td><code>u⃗ · v⃗ > 0</code></td><td><strong>α agut</strong></td><td>Angle menor de 90°</td></tr>
+          <tr><td><code>u⃗ · v⃗ < 0</code></td><td><strong>α obtús</strong></td><td>Angle major de 90°</td></tr>
+          <tr><td><code>u⃗ · u⃗</code></td><td><strong>= |u⃗|²</strong></td><td>Producte escalar d'un vector per ell mateix</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="why-box">La perpendicularitat (producte escalar = 0) és l'eina que s'usa milers de vegades: per trobar normals a plans, per calcular distàncies, per verificar angles rectes.</div>
+  </div>
+
+  <div class="algo">
+    <div class="algo-header">⚙ Algoritme: angle entre dos vectors</div>
+    <div class="algo-step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <strong>Calcular el producte escalar</strong>
+        <span>u⃗ · v⃗ = x₁x₂ + y₁y₂ + z₁z₂</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <strong>Calcular els dos mòduls</strong>
+        <span>|u⃗| = √(x₁²+y₁²+z₁²)  i  |v⃗| = √(x₂²+y₂²+z₂²)</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">3</span>
+      <div class="step-content">
+        <strong>Aplicar la fórmula</strong>
+        <span>cos(α) = (u⃗·v⃗) / (|u⃗|·|v⃗|)  →  α = arccos(resultat)</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">4</span>
+      <div class="step-content">
+        <strong>Interpretar el resultat</strong>
+        <span>Si cos = 0 → perpendiculars. Si |cos| = 1 → paral·lels.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pau-box">
+    <div class="pau-box-header">
+      <span class="pau-tag">★ Exemple PAU</span>
+      <h4>Angle entre vectors i perpendicularitat</h4>
+    </div>
+    <div class="enunciat">
+      Donats u⃗ = (2, −1, 3) i v⃗ = (1, k, −1).<br>
+      a) Calcula k perquè u⃗ i v⃗ siguin perpendiculars.<br>
+      b) Si k = 0, calcula l'angle que formen.
+    </div>
+    <button class="toggle-btn" onclick="toggleSol(this,'sol3')">▶ Veure solució</button>
+    <div id="sol3" class="solution">
+      <div class="sol-step">
+        <span class="s-num">a)</span>
+        <div>Perpendiculars ↔ u⃗·v⃗ = 0<br>
+        u⃗·v⃗ = 2·1 + (−1)·k + 3·(−1) = 2 − k − 3 = −1 − k = 0<br>
+        <strong>→ k = −1</strong></div>
+      </div>
+      <div class="sol-step">
+        <span class="s-num">b)</span>
+        <div>k = 0 → v⃗ = (1, 0, −1)<br>
+        u⃗·v⃗ = 2·1 + (−1)·0 + 3·(−1) = 2 − 3 = <strong>−1</strong><br>
+        |u⃗| = √(4+1+9) = √14 &nbsp;&nbsp; |v⃗| = √(1+0+1) = √2<br>
+        cos(α) = −1 / (√14·√2) = −1/√28 ≈ −0.189<br>
+        <strong>→ α = arccos(−0.189) ≈ 100.9°</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S4: PROJECCIÓ -->
+<div id="s4" class="section">
+  <div class="section-header">
+    <span class="section-tag">Tema 4 · Projecció</span>
+    <h2>Projecció d'un<br>Vector sobre un altre</h2>
+    <p>La "ombra" d'un vector sobre la direcció d'un altre.</p>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green">🔦</div>
+      <h3>Fórmules</h3>
+    </div>
+    <p>Donat u⃗ = (x₁,y₁,z₁) <em>sobre</em> v⃗ = (x₂,y₂,z₂):</p>
+    <div class="formula-box">
+      <span class="formula-label">Segment projecció (escalar)</span>
+      proj<sub>v⃗</sub>(u⃗) = <span class="f-hi">(u⃗ · v⃗) / |v⃗|</span>
+    </div>
+    <div class="formula-box">
+      <span class="formula-label">Vector projecció</span>
+      <span class="f-hi">proj⃗<sub>v⃗</sub>(u⃗)</span> = [(u⃗·v⃗) / |v⃗|²] · v⃗
+    </div>
+    <div class="why-box">El vector projecció és la "component" de u⃗ en la direcció de v⃗. S'usa en distàncies i per descompondre forces en física.</div>
+  </div>
+
+  <div class="algo">
+    <div class="algo-header">⚙ Algoritme: vector projecció</div>
+    <div class="algo-step">
+      <span class="step-num">1</span>
+      <div class="step-content"><strong>Producte escalar</strong><span> → u⃗ · v⃗</span></div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">2</span>
+      <div class="step-content"><strong>Mòdul al quadrat de v⃗</strong><span> → |v⃗|² = x₂²+y₂²+z₂²</span></div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">3</span>
+      <div class="step-content"><strong>Multiplicar per v⃗</strong><span> → [(u⃗·v⃗)/|v⃗|²] · (x₂,y₂,z₂)</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- S5: PRODUCTE VECTORIAL -->
+<div id="s5" class="section">
+  <div class="section-header">
+    <span class="section-tag">Tema 5 · ★ Alta prioritat PAU</span>
+    <h2>Producte Vectorial<br>i Àrees</h2>
+    <p>Genera un vector perpendicular als dos. Imprescindible per a plans i àrees.</p>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green">✖</div>
+      <h3>Definició i càlcul</h3>
+    </div>
+    <p>El producte vectorial u⃗ × v⃗ dona un <strong>nou vector</strong>, perpendicular als dos:</p>
+    <div class="formula-box">
+      <span class="formula-label">Determinant 3×3 (mnemotècnica)</span>
+      u⃗×v⃗ = | î  ĵ  k̂ |<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| x₁ y₁ z₁ |<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| x₂ y₂ z₂ |<br><br>
+      = (<span class="f-hi">y₁z₂−z₁y₂</span>, <span class="f-hi">z₁x₂−x₁z₂</span>, <span class="f-hi">x₁y₂−y₁x₂</span>)
+    </div>
+    <div class="formula-box">
+      <span class="formula-label">Mòdul = àrea del paral·lelogram</span>
+      |u⃗×v⃗| = <span class="f-hi">Àrea paral·lelogram</span><br>
+      Àrea triangle = <span class="f-hi">½ · |u⃗×v⃗|</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-orange">🎯</div>
+      <h3>Usos a PAU</h3>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>El necessites per...</th><th>Com s'usa</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Vector normal a un pla</strong></td><td>Agafes 2 vectors directors del pla → u⃗×v⃗ és el normal</td></tr>
+          <tr><td><strong>Àrea d'un triangle</strong></td><td>½·|AB⃗×AC⃗|</td></tr>
+          <tr><td><strong>Àrea d'un paral·lelogram</strong></td><td>|u⃗×v⃗|</td></tr>
+          <tr><td><strong>Distància punt-recta</strong></td><td>|RP⃗×d⃗| / |d⃗|</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="algo">
+    <div class="algo-header">⚙ Algoritme: producte vectorial per determinants</div>
+    <div class="algo-step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <strong>Escriu el determinant 3×3</strong>
+        <span>Fila 1: î ĵ k̂ | Fila 2: x₁ y₁ z₁ | Fila 3: x₂ y₂ z₂</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <strong>Component î (cofactor de la 1a columna)</strong>
+        <span>+|y₁ z₁; y₂ z₂| = y₁z₂ − z₁y₂</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">3</span>
+      <div class="step-content">
+        <strong>Component ĵ (signe negatiu!)</strong>
+        <span>−|x₁ z₁; x₂ z₂| = −(x₁z₂ − z₁x₂) = z₁x₂ − x₁z₂</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">4</span>
+      <div class="step-content">
+        <strong>Component k̂</strong>
+        <span>+|x₁ y₁; x₂ y₂| = x₁y₂ − y₁x₂</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">5</span>
+      <div class="step-content">
+        <strong>Verificació bàsica</strong>
+        <span>Comprova que (u⃗×v⃗)·u⃗ = 0 i (u⃗×v⃗)·v⃗ = 0 (ha de ser perpendicular als dos)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="why-box">La component ĵ porta signe NEGATIU perquè el determinant s'expandeix per la primera fila amb signes +−+. Molts errors a PAU venen d'oblidar aquest signe.</div>
+
+  <div class="pau-box">
+    <div class="pau-box-header">
+      <span class="pau-tag">★ Exemple PAU</span>
+      <h4>Àrea d'un triangle donats tres vèrtexs</h4>
+    </div>
+    <div class="enunciat">
+      Donats els punts A(1, 0, 2), B(3, 1, −1), C(0, 2, 1).<br>
+      Calcula l'àrea del triangle ABC.
+    </div>
+    <button class="toggle-btn" onclick="toggleSol(this,'sol5')">▶ Veure solució</button>
+    <div id="sol5" class="solution">
+      <div class="sol-step">
+        <span class="s-num">1</span>
+        <div>Vectors dels costats des de A:<br>
+        AB⃗ = B−A = (2, 1, −3)<br>
+        AC⃗ = C−A = (−1, 2, −1)</div>
+      </div>
+      <div class="sol-step">
+        <span class="s-num">2</span>
+        <div>Producte vectorial AB⃗ × AC⃗:<br>
+        î: (1·(−1) − (−3)·2) = −1+6 = <strong>5</strong><br>
+        ĵ: −(2·(−1) − (−3)·(−1)) = −(−2−3) = <strong>5</strong><br>
+        k̂: (2·2 − 1·(−1)) = 4+1 = <strong>5</strong><br>
+        AB⃗×AC⃗ = (5, 5, 5)</div>
+      </div>
+      <div class="sol-step">
+        <span class="s-num">3</span>
+        <div>|AB⃗×AC⃗| = √(25+25+25) = √75 = 5√3<br>
+        <strong>Àrea = ½ · 5√3 = 5√3/2 ≈ 4.33 u²</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S6: PRODUCTE MIXT -->
+<div id="s6" class="section">
+  <div class="section-header">
+    <span class="section-tag">Tema 6 · ★ Alta prioritat PAU</span>
+    <h2>Producte Mixt<br>i Volums</h2>
+    <p>Tres vectors, un determinant, moltes aplicacions.</p>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green">📦</div>
+      <h3>Definició i càlcul</h3>
+    </div>
+    <p>El producte mixt de u⃗, v⃗, w⃗ és el <strong>determinant 3×3</strong> format per les seves components:</p>
+    <div class="formula-box">
+      <span class="formula-label">Producte mixt = determinant</span>
+      [u⃗, v⃗, w⃗] = <span class="f-hi">| x₁ y₁ z₁ |</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="f-hi">| x₂ y₂ z₂ |</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="f-hi">| x₃ y₃ z₃ |</span>
+    </div>
+    <div class="formula-box">
+      <span class="formula-label">Volum del paral·lelepípede</span>
+      V<sub>paral·lelepípede</sub> = <span class="f-hi">|[u⃗, v⃗, w⃗]|</span>
+    </div>
+    <div class="formula-box">
+      <span class="formula-label">Volum del tetraedre (4 vèrtexs)</span>
+      V<sub>tetraedre</sub> = <span class="f-hi">(1/6) · |[AB⃗, AC⃗, AD⃗]|</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-orange">💎</div>
+      <h3>Aplicació CRÍTICA: vectors coplanaris</h3>
+    </div>
+    <p>Si el producte mixt <strong>= 0</strong>, els tres vectors (o punts) <strong>són coplanaris</strong>. Aquesta propietat serveix per:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Producte mixt</th><th>Significat</th></tr></thead>
+        <tbody>
+          <tr><td><code>[u⃗,v⃗,w⃗] = 0</code></td><td><strong>Vectors coplanaris</strong> (estan al mateix pla)</td></tr>
+          <tr><td><code>[u⃗,v⃗,w⃗] ≠ 0</code></td><td><strong>NO coplanaris</strong> (formen un volum real)</td></tr>
+          <tr><td>Rectes r, s: det = 0</td><td>Les rectes es <strong>tallen</strong> (o coincideixen)</td></tr>
+          <tr><td>Rectes r, s: det ≠ 0</td><td>Les rectes <strong>es creuen</strong> a l'espai (no es tallen)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="why-box">Quan estudiem posicions relatives de rectes al Bloc 2, el producte mixt és l'eina definitiva per distingir entre "es tallen" i "es creuen". Memoritza: det=0 → coplanaris → es tallen.</div>
+  </div>
+
+  <div class="algo">
+    <div class="algo-header">⚙ Algoritme: volum d'un tetraedre ABCD</div>
+    <div class="algo-step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <strong>Tria un vèrtex base (A)</strong>
+        <span>Calcula: AB⃗, AC⃗, AD⃗</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <strong>Munta el determinant 3×3</strong>
+        <span>Files = components de AB⃗, AC⃗, AD⃗</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">3</span>
+      <div class="step-content">
+        <strong>Calcula el determinant</strong>
+        <span>Usa la regla de Sarrus o expansió per la primera fila</span>
+      </div>
+    </div>
+    <div class="algo-step">
+      <span class="step-num">4</span>
+      <div class="step-content">
+        <strong>Multiplica per 1/6 i pren el valor absolut</strong>
+        <span>V = (1/6) · |det|</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pau-box">
+    <div class="pau-box-header">
+      <span class="pau-tag">★ Exemple PAU</span>
+      <h4>Volum del tetraedre i coplanaritat</h4>
+    </div>
+    <div class="enunciat">
+      Donats A(1,1,1), B(2,3,0), C(0,1,2), D(3,2,1).<br>
+      a) Calcula el volum del tetraedre ABCD.<br>
+      b) Els 4 punts, ¿formen un tetraedre o són coplanaris?
+    </div>
+    <button class="toggle-btn" onclick="toggleSol(this,'sol6')">▶ Veure solució</button>
+    <div id="sol6" class="solution">
+      <div class="sol-step">
+        <span class="s-num">1</span>
+        <div>Vectors des de A:<br>
+        AB⃗ = (1, 2, −1)<br>
+        AC⃗ = (−1, 0, 1)<br>
+        AD⃗ = (2, 1, 0)</div>
+      </div>
+      <div class="sol-step">
+        <span class="s-num">2</span>
+        <div>Determinant 3×3:<br>
+        | 1   2  −1 |<br>
+        |−1   0   1 |<br>
+        | 2   1   0 |<br><br>
+        = 1(0·0−1·1) − 2((−1)·0−1·2) + (−1)((−1)·1−0·2)<br>
+        = 1(−1) − 2(−2) + (−1)(−1)<br>
+        = −1 + 4 + 1 = <strong>4</strong></div>
+      </div>
+      <div class="sol-step">
+        <span class="s-num">3</span>
+        <div>V = (1/6)·|4| = <strong>4/6 = 2/3 u³</strong><br>
+        Com det ≠ 0 → els 4 punts <strong>NO són coplanaris</strong> → formen un tetraedre real.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="card" style="border-color: rgba(74,240,176,0.3)">
+    <div class="card-header">
+      <div class="card-icon icon-green">🏆</div>
+      <h3>Resum Bloc 1 — Full de fórmules PAU</h3>
+    </div>
+    <div class="formula-box">
+      <span class="formula-label">Vector</span>
+      AB⃗ = B − A = (x₂−x₁, y₂−y₁, z₂−z₁)<br><br>
+      <span class="formula-label">Mòdul</span>
+      |u⃗| = √(x²+y²+z²)<br><br>
+      <span class="formula-label">Producte escalar</span>
+      u⃗·v⃗ = x₁x₂+y₁y₂+z₁z₂  |  cos α = (u⃗·v⃗)/(|u⃗||v⃗|)<br><br>
+      <span class="formula-label">Perpendicularitat</span>
+      u⃗⊥v⃗ ↔ u⃗·v⃗ = 0<br><br>
+      <span class="formula-label">Producte vectorial</span>
+      u⃗×v⃗ = (y₁z₂−z₁y₂, z₁x₂−x₁z₂, x₁y₂−y₁x₂)<br><br>
+      <span class="formula-label">Àrees</span>
+      A(paral·lelogram) = |u⃗×v⃗|  |  A(triangle) = ½|u⃗×v⃗|<br><br>
+      <span class="formula-label">Producte mixt</span>
+      [u⃗,v⃗,w⃗] = det 3×3  |  V(tetraedre) = (1/6)|det|
+    </div>
+    <p style="margin-top:12px">✅ <strong>Ja tens el Bloc 1!</strong> Quan vulguis, continuem amb el <strong>Bloc 2: Rectes i Plans</strong> — on tot això es converteix en les eines per resoldre problemes de PAU complets.</p>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleSol(btn, id) {
+  const sol = document.getElementById(id);
+  sol.classList.toggle('open');
+  btn.classList.toggle('open');
+  btn.textContent = sol.classList.contains('open') ? '▼ Amagar solució' : '▶ Veure solució';
+}
+</script>
+</body>
+</html>
